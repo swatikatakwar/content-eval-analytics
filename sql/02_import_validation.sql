@@ -23,3 +23,11 @@ GO
 SELECT COUNT(*) AS Attendance_Final_Rows
 FROM dbo.Attendance;
 GO
+
+SELECT
+    status,
+    COUNT(*) AS RecordCount
+FROM dbo.Attendance
+GROUP BY status
+ORDER BY RecordCount DESC;
+GO
