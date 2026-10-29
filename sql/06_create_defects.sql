@@ -53,3 +53,24 @@ SELECT
     TRY_CONVERT(INT, resolution_min)
 FROM dbo.Defects_Import;
 GO
+
+
+
+-- Step 1: Preserve decimal precision in the final table
+ALTER TABLE dbo.Defects
+ALTER COLUMN resolution_min DECIMAL(10,2);
+
+-- Step 2: Restore original resolution values from the import table
+UPDATE d
+SET d.resolution_min = i.resolution_min
+FROM dbo.Defects AS d
+INNER JOIN dbo.Defects_Import AS i
+    ON d.defect_id = i.defect_id;
+
+-- Step 3: Validate the corrected results
+SELECT
+    COUNT(*) AS TotalDefects,
+    AVG(resolution_min) AS AverageResolutionMinutes,
+    MIN(resolution_min) AS MinimumResolutionMinutes,
+    MAX(resolution_min) AS MaximumResolutionMinutes
+FROM dbo.Defects;
